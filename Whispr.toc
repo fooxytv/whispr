@@ -1,0 +1,17 @@
+# Copyright (C) 2023 FooxyTV (simon@fooxy.tv)
+# All rights reserved.
+# Programming by: fooxytv
+
+## Interface: 110107
+## Title: Whispr
+## Version: 0.1.0-alpha.0
+## Notes: A modern whisper/chat interface
+## SavedVariables: Whispr_Account
+## SavedVariablesPerCharacter: Whispr_Lockout
+
+core/init.lua
+core/events.lua
+core/ui.lua
+
+modules/whispers.lua
+modules/notifications.lua
