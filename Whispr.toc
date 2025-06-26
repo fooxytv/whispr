@@ -13,5 +13,10 @@ core/init.lua
 core/events.lua
 core/ui.lua
 
-modules/whispers.lua
+#modules/whispers.lua
+
+modules/chat.lua
+modules/contacts.lua
+modules/messages.lua
+modules/commands.lua
 modules/notifications.lua

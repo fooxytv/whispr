@@ -1,8 +1,12 @@
-local Notifications = {}
+Whispr.Notifications = {}
 
-Notifications.active = {}
+Whispr.Notifications.active = {}
 
-function Notifications:ShowNotification(sender, msg)
+function Whispr.Notifications:OnInit()
+    -- Initialize when addon loads
+end
+
+function Whispr.Notifications:ShowNotification(sender, msg)
   local frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
   frame:SetSize(240, 60)
   frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", -300, 550 + (#self.active * 68))
@@ -55,15 +59,16 @@ function Notifications:ShowNotification(sender, msg)
   snippet:SetJustifyH("LEFT")
   snippet:SetText(string.sub(msg, 1, 60) .. "...")
 
-  -- Click to open or dismiss
+  -- Click to open or dismiss - UPDATED for new module structure
   frame:SetScript("OnMouseDown", function(_, btn)
     if btn == "RightButton" then
       -- Right-click to close
       frame:Hide()
       self:Remove(frame)
     elseif btn == "LeftButton" then
-      if Whispr.modules.Whispers and Whispr.modules.Whispers.SetTarget then
-        Whispr.modules.Whispers:SetTarget(sender)
+      -- Left-click to open chat with this person - UPDATED
+      if Whispr.Messages and Whispr.Messages.SetTarget then
+        Whispr.Messages:SetTarget(sender)
       end
       frame:Hide()
       self:Remove(frame)
@@ -83,7 +88,7 @@ function Notifications:ShowNotification(sender, msg)
   end)
 end
 
-function Notifications:Remove(target)
+function Whispr.Notifications:Remove(target)
   for i, frame in ipairs(self.active) do
     if frame == target then
       table.remove(self.active, i)
@@ -98,4 +103,22 @@ function Notifications:Remove(target)
   end
 end
 
-Whispr:RegisterModule("Notifications", Notifications)
+function Whispr.Notifications:ClearAll()
+    for _, frame in ipairs(self.active) do
+        if frame and frame:IsShown() then
+            frame:Hide()
+        end
+    end
+    self.active = {}
+end
+
+function Whispr.Notifications:GetActiveCount()
+    return #self.active
+end
+
+-- Register the module
+if Whispr and Whispr.RegisterModule then
+    Whispr:RegisterModule("Notifications", Whispr.Notifications)
+else
+    error("Whispr framework not loaded before Notifications module")
+end
