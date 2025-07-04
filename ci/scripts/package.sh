@@ -26,7 +26,7 @@ mkdir ./ci/dist
 zip_file="ci/dist/${addon_name}-${version}.zip"
 echo "Packaging addon into $zip_file.."
 
-zip -r "$zip_file" . -x "*.git*" "dist/*" "ci/*" "README.md" ".vscode/*" ".env*" "code/*"
+zip -r "$zip_file" . -x "*.git*" "dist/*" "ci/*" "README.md" ".vscode/*" ".idea/*" ".env*" "code/*"
 
 if [ $? -eq 0 ]; then
     echo -e "\033[32mSuccessfully packaged addon.\033[0m"
