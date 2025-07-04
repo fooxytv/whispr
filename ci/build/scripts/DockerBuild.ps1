@@ -16,8 +16,10 @@ $projectDir = "/c/Users/Simon/workspace/addons/Whispr"
 $containerWorkDir = "/app"
 
 # Hardcoded path for wow_addons_dir
-$wowAddonsDir = "/f/Program Files/World of Warcraft/_retail_/Interface/AddOns"
-$wowAddonsDirPtr = "/e/Program Files/World of Warcraft/_xptr_/Interface/AddOns"
+# $wowAddonsDir = "/f/Program Files/World of Warcraft/_retail_/Interface/AddOns"
+# $wowAddonsDirPtr = "/e/Program Files/World of Warcraft/_xptr_/Interface/AddOns"
+$wowAddonsDirClassicEra = "/e/Program Files/World of Warcraft/_classic_era_/Interface/AddOns"
+$wowAddonsDirClassic = "/e/Program Files/World of Warcraft/_classic_/Interface/AddOns"
 
 Write-Host "Building Docker image: $imageName"
 docker build -t $imageName -f $dockerFilePath .
@@ -32,6 +34,8 @@ docker run --rm -ti `
     -v "${projectDir}:${containerWorkDir}" `
     -v "${wowAddonsDir}:${wowAddonsDir}" `
     -v "${wowAddonsDirPtr}:${wowAddonsDirPtr}" `
+    -v "${wowAddonsDirClassicEra}:${wowAddonsDirClassicEra}" `
+    -v "${wowAddonsDirClassic}:${wowAddonsDirClassic}" `
     $imageName bash
 
 if ($LASTEXITCODE -ne 0) {

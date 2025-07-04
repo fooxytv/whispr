@@ -56,21 +56,59 @@ function Whispr.Messages:OnEvent(event, msg, sender)
     end
 end
 
+-- Add this to your Messages:SetTarget function in messages.lua
+
 function Whispr.Messages:SetTarget(playerName)
     self.target = playerName
-    local frame = Whispr.Chat:GetFrame()
-    if not frame then
-        Whispr.Chat:Create()
-        frame = Whispr.Chat:GetFrame()
+    
+    -- Update the chat UI title
+    if Whispr.Chat:GetChatArea() then
+        Whispr.Chat:GetChatArea().titleText:SetText("Chat with " .. (playerName:match("^[^-]+") or playerName))
     end
-
-    local chatArea = Whispr.Chat:GetChatArea()
-    if chatArea and chatArea.titleText then
-        chatArea.titleText:SetText(("Talking to: |cff00ccff%s|r"):format(playerName))
+    
+    -- Clear unread count for this contact
+    if self.conversations[playerName] then
+        for _, message in ipairs(self.conversations[playerName]) do
+            message.unread = false
+        end
     end
-
+    
+    -- Update the contact list to show selection and refresh unread counts
+    if Whispr.Contacts then
+        Whispr.Contacts:SetSelectedContact(playerName)
+    end
+    
+    -- Load the conversation messages
     self:LoadConversation(playerName)
-    frame:Show()
+end
+
+-- Also update your message receiving function to mark messages as unread
+-- Add this to wherever you handle incoming whispers
+
+function Whispr.Messages:OnWhisperReceived(sender, message)
+    if not self.conversations[sender] then
+        self.conversations[sender] = {}
+    end
+    
+    local isCurrentTarget = (sender == self.target)
+    
+    table.insert(self.conversations[sender], {
+        sender = sender,
+        text = message,
+        fromPlayer = false,
+        timestamp = date("%H:%M"),
+        unread = not isCurrentTarget -- Mark as unread if not currently viewing this conversation
+    })
+    
+    -- Update the sidebar to show new message
+    if Whispr.Contacts then
+        Whispr.Contacts:UpdateSidebar()
+    end
+    
+    -- If this is the current conversation, load it to show the new message
+    if isCurrentTarget then
+        self:LoadConversation(sender)
+    end
 end
 
 function Whispr.Messages:GetConversations()
